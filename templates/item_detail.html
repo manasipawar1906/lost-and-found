@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="item-detail">
+    <h2>{{ item.item_name }}</h2>
+    <p><strong>Status:</strong> {{ item.status }}</p>
+    <p><strong>Category:</strong> {{ item.category }}</p>
+    <p><strong>Description:</strong> {{ item.description }}</p>
+    <p><strong>Location:</strong> {{ item.location }}</p>
+    <p><strong>Date Reported:</strong> {{ item.date_reported }}</p>
+    <p><strong>Reported by:</strong> {{ item.username }} ({{ item.email }})</p>
+
+    {% if session.user_id and item.status != 'claimed' %}
+        <a href="{{ url_for('claim', item_id=item.id) }}" class="claim-btn">Mark as Claimed</a>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}">&larr; Back to all items</a>
+</div>
+
+{% endblock %}

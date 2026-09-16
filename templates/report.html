@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Report a Lost or Found Item</h2>
+<form method="POST" class="form-box">
+    <label>Item Name</label>
+    <input type="text" name="item_name" required>
+
+    <label>Description</label>
+    <textarea name="description" rows="4"></textarea>
+
+    <label>Category</label>
+    <input type="text" name="category" placeholder="e.g. Electronics, Bag, ID Card">
+
+    <label>Location</label>
+    <input type="text" name="location" placeholder="Where was it lost/found?">
+
+    <label>Status</label>
+    <select name="status">
+        <option value="lost" {% if request.args.get('status') == 'lost' %}selected{% endif %}>Lost</option>
+        <option value="found" {% if request.args.get('status') == 'found' %}selected{% endif %}>Found</option>
+    </select>
+
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}

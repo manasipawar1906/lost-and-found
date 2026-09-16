@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+    <h1>Lost & Found</h1>
+    <p class="hero-sub">Reconnect people with their belongings</p>
+    <p class="hero-tagline">Search reported items or report something you've lost or found.</p>
+
+    <div class="hero-actions">
+        <a href="{{ url_for('report') }}?status=lost" class="hero-btn hero-btn-lost">🔴 Report Lost Item</a>
+        <a href="{{ url_for('report') }}?status=found" class="hero-btn hero-btn-found">🟢 Report Found Item</a>
+    </div>
+</section>
+
+<form method="get" class="search-bar">
+    <input type="text" name="q" placeholder="🔍 Search items by name, category or location..." value="{{ search_query or '' }}">
+    <button type="submit">Search</button>
+</form>
+
+<form method="get" class="filter-bar">
+    <input type="hidden" name="q" value="{{ search_query or '' }}">
+
+    <div class="filter-group">
+        <label>Status</label>
+        <select name="status" onchange="this.form.submit()">
+            <option value="" {% if not selected_status %}selected{% endif %}>All</option>
+            <option value="lost" {% if selected_status == 'lost' %}selected{% endif %}>Lost</option>
+            <option value="found" {% if selected_status == 'found' %}selected{% endif %}>Found</option>
+            <option value="claimed" {% if selected_status == 'claimed' %}selected{% endif %}>Claimed</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>Category</label>
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>Location</label>
+        <select name="location" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for loc in locations %}
+            <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>{{ loc }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>Sort</label>
+        <select name="sort" onchange="this.form.submit()">
+            <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest first</option>
+            <option value="oldest" {% if selected_sort == 'oldest' %}selected{% endif %}>Oldest first</option>
+        </select>
+    </div>
+</form>
+
+<h2>All Items</h2>
+
+<div class="item-grid">
+    {% for item in items %}
+    <div class="item-card">
+        <div class="item-image">📷</div>
+        <div class="item-body">
+            <span class="badge badge-{{ item.status }}">
+                {% if item.status == 'lost' %}🔴{% elif item.status == 'found' %}🟢{% else %}⚪{% endif %}
+                {{ item.status }}
+            </span>
+
+            <h3>{{ item.item_name }}</h3>
+            <p class="meta">📍 {{ item.location }}</p>
+            <p class="meta">📅 {{ item.date_reported }}</p>
+            <p class="reporter">Reported by {{ item.username }}</p>
+
+            <a href="{{ url_for('item_detail', item_id=item.id) }}" class="view-btn">View Details</a>
+        </div>
+    </div>
+    {% else %}
+    <p>No items found matching your search/filters.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
